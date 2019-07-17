@@ -76,7 +76,7 @@ std::vector<float> PedestrianReid::ProcessSingleImg(const cv::Mat&inputImg){
 
 }
 
-std::vector<vector<float>> PedestrianReid::ProcessBatchImgPre(const vector<cv::Mat>& inputImgs){
+std::vector<vector<float>> PedestrianReid::ProcessBatchImg(const vector<cv::Mat>& inputImgs){
   std::vector<vector<float>> outVectors;
   std::vector<torch::Tensor> tInputVectors;
   std::vector<torch::jit::IValue> inputsTensor;
@@ -103,4 +103,23 @@ std::vector<vector<float>> PedestrianReid::ProcessBatchImgPre(const vector<cv::M
 
   return outVectors;
 
+}
+
+std::vector<vector<float>> PedestrianReid ::PrecessedBatchImagesNormalize(const vector<cv::Mat>& inputImgs){
+  std::vector<vector<float>> outVectors=ProcessBatchImg(inputImgs);
+  std::vector<vector<float >> outNormalized;
+  int vlen=outVectors[0].size();
+  for( int i=0;i<batch;i++){
+    vector<float> oneVector=outVectors[i];
+    float fnorm=normalizeprocess(oneVector);
+    for(j=0;j<vlen;j++){
+      oneVector/=fnorm;
+
+    }
+    outNormalized.push_back(oneVector);
+
+
+  }
+
+  return outNormalized;
 }
